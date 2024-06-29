@@ -21,11 +21,11 @@ class AuthController extends Controller
             }
             $user= User::where('email',$request->email)->first();
             
-            $user['token']=$user->createToken("API TOKEN")->plainTextToken;
+            // $user['token']=$user->createToken("API TOKEN")->plainTextToken;
             // return new UserResource($user);
             return response()->json([
                 'user'=>$user,
-                // 'token'=>$user->createToken('Api Token of '. $user->name)->plainTextToken
+                'token'=>$user->createToken('Api Token of '. $user->name)->plainTextToken
             ]);
         }catch (\Throwable $th) {
             return response()->json([
