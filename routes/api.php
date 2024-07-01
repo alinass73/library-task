@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\Api\V1\BookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,8 @@ Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum')->name('logout');
 
-Route::post('/entrydata',[AuthController::class,'dataEntryStore'])->middleware(['auth:sanctum','admin']);
+Route::post('/entrydata',[AdminController::class,'dataEntryStore'])->middleware(['auth:sanctum','admin']);
+Route::get('/readers',[AdminController::class,'indexOfReaders'])->middleware(['auth:sanctum','admin']);
 
 Route::prefix('book')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/update/{book}',[BookController::class,'update']);
@@ -32,3 +34,5 @@ Route::prefix('book')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/{book}',[BookController::class,'show']);
     Route::delete('/delete/{book}',[BookController::class,'destroy']);
 });
+
+

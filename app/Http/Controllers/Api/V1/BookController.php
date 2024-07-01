@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Smalot\PdfParser\Parser;
+use App\Http\Controllers\Controller;
 
 class BookController extends Controller
 {
@@ -59,6 +60,7 @@ class BookController extends Controller
     {
         try{
             $pathToFile='storage/'.$book->path;
+            $book->reads()->create(['user_id'=>auth()->user()->id]);
             return response()->file($pathToFile);
         }catch (\Throwable $th) {
             return response()->json([
