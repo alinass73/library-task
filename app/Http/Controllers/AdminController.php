@@ -6,12 +6,16 @@ use App\Http\Resources\ReadResource;
 use App\Models\Read;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
     //
     public function indexOfReaders(){
         $readers=Read::paginate(10);
+        $readers= Cache::remember('reads',30*60,function(){
+            return Read::paginate(10);          
+        });
         return ReadResource::collection($readers);
     }
     

@@ -9,6 +9,7 @@ use Smalot\PdfParser\Parser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookStoreRequest;
 use App\Http\Requests\BookUpdateRequest;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -19,7 +20,6 @@ class BookController extends Controller
     public function store(BookStoreRequest $request)
     {
         try{
-            
             
             //check if the inserter is an admin '1' or a data entry '2'
             // if(auth()->user()->role->name=='admin' || auth()->user()->role->name=='data_entry')
@@ -32,6 +32,8 @@ class BookController extends Controller
                     'description'=>$request->description,
                     'path'=>$pdfPath,
                 ]);
+                if(Cache::has('books'))
+                    Cache::forget('books');
                 return response()->json([
                     'book' => $book
                 ], 201);
@@ -50,7 +52,10 @@ class BookController extends Controller
 
     public function index()
     {
-        $books= Book::orderBy('name')->paginate(10);
+        $books= Cache::remember('books',30*60,function(){
+            return Book::orderBy('name')->paginate(10);          
+        });
+        // $books= Book::orderBy('name')->paginate(10);
         return BookResource::collection($books);
     }
     

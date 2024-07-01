@@ -25,9 +25,12 @@ Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum')->name('logout');
 
-Route::post('/entrydata',[AdminController::class,'dataEntryStore'])->middleware(['auth:sanctum','admin']);
-Route::get('/reader',[AdminController::class,'indexOfReaders'])->middleware(['auth:sanctum','admin']);
-Route::get('/reader/{read}',[AdminController::class,'showReader'])->middleware(['auth:sanctum','admin']);
+Route::middleware(['auth:sanctum','admin'])->group(function(){
+    Route::post('/entrydata',[AdminController::class,'dataEntryStore']);
+    Route::get('/reader',[AdminController::class,'indexOfReaders']);
+    Route::get('/reader/{read}',[AdminController::class,'showReader']);
+});
+
 
 Route::prefix('book')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/update/{book}',[BookController::class,'update']);
