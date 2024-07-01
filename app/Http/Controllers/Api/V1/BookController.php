@@ -7,6 +7,8 @@ use App\Models\Book;
 use Illuminate\Http\Request;
 use Smalot\PdfParser\Parser;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookStoreRequest;
+use App\Http\Requests\BookUpdateRequest;
 
 class BookController extends Controller
 {
@@ -14,18 +16,14 @@ class BookController extends Controller
     {
         return $request->file('path')->store('pdfs','public');
     }
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
         try{
-            $request->validate([
-                'name'=>['required','string','min:2','max:60'],
-                'description'=>['required','string','min:4','max:120'],
-                'path'=>['required','mimes:pdf']
-            ]);
-           
+            
             
             //check if the inserter is an admin '1' or a data entry '2'
             // if(auth()->user()->role->name=='admin' || auth()->user()->role->name=='data_entry')
+            $request->validated();
             if(auth()->user()->role_id==1 || auth()->user()->role_id==2)
             {
                 $pdfPath= $this->getPdfPath($request);
@@ -41,7 +39,7 @@ class BookController extends Controller
             else {
                 return response()->json(['message' => 'You don\'t have permission to insert a book'], 401);
             }
-
+            
         }catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -76,8 +74,9 @@ class BookController extends Controller
             $request->validate([
                 'name'=>['string','min:2','max:60'],
                 'description'=>['string','min:4','max:120'],
+                // 'path'=>['mimes:pdf']
             ]);
-
+            // $request->validated();
             //check if the inserter is an admin '1' or a data entry '2'
             // if(auth()->user()->role->name=='admin' || auth()->user()->role->name=='data_entry')
             if(auth()->user()->role_id==1 || auth()->user()->role_id==2)

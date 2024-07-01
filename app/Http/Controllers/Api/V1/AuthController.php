@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserStoreRequest;
 use App\Http\Responses\Response;
 use App\Models\User;
 use App\Services\UserService;
@@ -36,17 +38,11 @@ class AuthController extends Controller
         return auth()->user()->role->name;
     }
 
-    public function register(Request $request)
+    public function register(UserStoreRequest $request)
     {
         $data= [];
         try{
-            
-            $data = $this->userService->register($request->validate([
-                'name'=>['required'],
-                'password'=>['required','confirmed'],
-                'email'=>['required','email'],
-            ]));
-            // return $data['user'];
+            $data = $this->userService->register($request->validated());
             return Response::Success($data['user'], $data['message']);
             }catch(\Throwable $th){
             $message= $th->getMessage();

@@ -26,16 +26,14 @@ class UserService
     
     public function login($request)
     {
-        $user=User::where('email', $request->email)->first();
+         $user = User::where('email', $request->email)->firstOrFail();
         if(!is_null($user))
         {
             if(!Auth::attempt($request->only(['email','password']))){
                 
-                $message= "Credentials do not match";
+                $message= "Password not true";
                 $code= 401;
-                // return ['message'=>$message,'code'=>$code];
             }else{
-                $user= User::where('email',$request->email)->first();
                 $user['token']=$user->createToken("API TOKEN")->plainTextToken;
                 $message= "login successfully";
                 $code= 200;
