@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +26,8 @@ Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum')->name('logout');
 
 Route::post('/entrydata',[AdminController::class,'dataEntryStore'])->middleware(['auth:sanctum','admin']);
-Route::get('/readers',[AdminController::class,'indexOfReaders'])->middleware(['auth:sanctum','admin']);
+Route::get('/reader',[AdminController::class,'indexOfReaders'])->middleware(['auth:sanctum','admin']);
+Route::get('/reader/{read}',[AdminController::class,'showReader'])->middleware(['auth:sanctum','admin']);
 
 Route::prefix('book')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/update/{book}',[BookController::class,'update']);
@@ -35,4 +37,16 @@ Route::prefix('book')->middleware(['auth:sanctum'])->group(function () {
     Route::delete('/delete/{book}',[BookController::class,'destroy']);
 });
 
+Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $request){
+    try{
+ 
+        $request->fulfill();
+        return response()->json(['status'=>true, 'message'=>'sucessfully']);
+    }catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+})->middleware(['auth:sanctum'])->name('verification.verify');
 

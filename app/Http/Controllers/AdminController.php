@@ -14,6 +14,10 @@ class AdminController extends Controller
         $readers=Read::paginate(10);
         return ReadResource::collection($readers);
     }
+    
+    public function showReader(Read $read){
+        return new ReadResource($read);
+    }
 
     public function dataEntryStore(Request $request)
     {
