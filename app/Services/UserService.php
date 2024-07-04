@@ -26,7 +26,7 @@ class UserService
     
     public function login($request)
     {
-         $user = User::where('email', $request->email)->firstOrFail();
+         $user = User::where('email', $request->email)->first();
         if(!is_null($user))
         {
             if(!Auth::attempt($request->only(['email','password']))){

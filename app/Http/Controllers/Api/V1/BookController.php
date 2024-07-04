@@ -103,21 +103,32 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        if($book==null)
+        return "sss";
         //check if the inserter is an admin '1' or a data entry '2'
         // if(auth()->user()->role->name=='admin' || auth()->user()->role->name=='data_entry')
-        if(auth()->user()->role_id==1 || auth()->user()->role_id==2)
-        {
-            $book->delete();
+        try{
+            
+            if(auth()->user()->role_id==1 || auth()->user()->role_id==2)
+            {
+                $book->delete();
+                return response()->json([
+                    'status'=>true,
+                    'message'=>'the delete process is Successfully'
+                ]);
+            }
+            else
             return response()->json([
-                'status'=>true,
-                'message'=>'the delete process is Successfully'
+                'status'=>false,
+                'message'=>'You don\'t have permission to delete this book',
             ]);
+        }catch(\Throwable $th)
+        {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
-        else
-        return response()->json([
-            'status'=>false,
-            'message'=>'You don\'t have permission to delete this book',
-        ]);
     }
 
 }

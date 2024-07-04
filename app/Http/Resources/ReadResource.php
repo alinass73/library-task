@@ -15,8 +15,8 @@ class ReadResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_id'=>$this->user->name,
-            'book_id'=>$this->book->name,
+            'user'=>$this->user->name,
+            'book'=>$this->book->name,
             'read_at'=>$this->created_at
         ];
     }

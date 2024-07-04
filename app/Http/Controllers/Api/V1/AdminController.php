@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\ReadResource;
 use App\Models\Read;
 use App\Models\User;
@@ -10,7 +11,6 @@ use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
-    //
     public function indexOfReaders(){
         $readers=Read::paginate(10);
         $readers= Cache::remember('reads',30*60,function(){
